@@ -1,0 +1,16 @@
+---
+title: "RHadoop Confirmation"
+author: "James Quacinella"
+date: "09/03/2015"
+output: pdf_document
+---
+
+```{r}
+library(rJava)
+library(rhdfs)
+hdfs.init()
+library(rmr2)
+a <- to.dfs(seq(from=1, to=500, by=3), output="/test")
+b <- mapreduce(input=a, map=function(k,v){keyval(v,v*v)})
+from.dfs(b())
+```
