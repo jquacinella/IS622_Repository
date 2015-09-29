@@ -1,0 +1,78 @@
+---
+title: "Week4 Discussion"
+author: "James Quacinella"
+date: "09/29/2015"
+output: pdf_document
+---
+
+# Question (Discussion) Exercise 3.5.1
+
+On the space of nonnegative integers, which of the following functions are distance measures? If so, prove it; if not, prove that it fails to satisfy one or more of the axioms.
+
+(a) max(x, y) = the larger of x and y.
+(b) diff(x, y) = |x - y| (the absolute magnitude of the difference between x and y).
+(c) sum(x, y) = x + y.
+
+
+## Answer
+
+For a distance metric, we need to meet these conditions:
+
+1. $d(x, y) >= 0$ (no negative distances)
+2. $d(x, y) = 0$ if and only if $x = y$ (distances are positive, except for the distance from a point to itself).
+3. $d(x, y)$ = $d(y, x)$ (distance is symmetric).
+4. $d(x, y) <= d(x, z) + d(z, y)$ (the triangle inequality)
+
+Lets look at $diff(x, y) = |x - y|$. The first condition is obviously true from the definition of the absolute value operator. All elements in the range of $|z|$ are greater than 0, so condition one is satisfied.
+
+The second condition is also true since the only time the $abs(z)$ function is 0 is when $z = 0$, in this case $z = x - y$. This infers that $x = y$ for this condition, and property two is satisfied. 
+
+The third condition is based on symmetry. To prove this, we need to prove that $d(x, y)$ = $d(y, x)$, or $|x - y| = |y - x|$. We do know that the asolute value has the property that $|z| = |-z|$. Therefore, the left side of the proof, |x - y|, can be rewritten as:
+
+$$| x - y |$$
+$$= | -(x - y) |$$
+$$= | -x + y |$$
+$$= | y - x |$$
+
+The third condition is therefore satsified. The last condition states that:
+
+$$d(x, y) <= d(x, z) + d(z, y)$$ 
+
+Therefore, the following must hold:
+
+$$|x-y| <= |x-z| + |z-y|$$
+
+We are working with non-negative integers. Let us assume for now that x < y. The following arguments can be re-made for the y < x case, which will complete the proof. We have three conditions:
+
+1) z < x
+2) x < z < y
+3) y < z
+
+Lets look at each case. If $z$ is less than $x$, the condition evaluates to:
+
+$$|x-y| <= |x-z| + |z-y|$$
+$$x-y <= (x-z) + (y-z)$$
+$$x-y <= x + y - 2z$$
+$$x <= x + 2y - 2z$$
+$$0 <= 2(y - z)$$
+$$0 <= y - z$$
+$$z <= y$$
+
+So for case one, the condition holds, since we know by stipulation that $z <= y$. The same reasoning will hold for condition 3, $y < z$:
+
+$$|x-y| <= |x-z| + |z-y|$$
+$$x - y <= (z - x) + (z - y)$$
+$$x - y <= 2z - x - y$$
+$$x <= 2z - x$$
+$$2x < 2z$$
+$$x <= z$$
+
+Which we know to be true by stipulation. The second condition, when $x < z < y$, is as follows:
+
+$$|x-y| <= |x-z| + |z-y|$$
+$$x - y <= (z - x) + (y - z)$$
+$$x - y <= y - x$$
+$$2x <= 2y$$
+$$x <= y$$
+
+Which is also true by stipulation. Without losing rigor, the same arguments can be made for y < x, due to symmetry. Therefore, $d(x,y)$, is a distance metric.

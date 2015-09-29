@@ -1,0 +1,38 @@
+---
+title: "Week 4"
+author: "James Quacinella"
+date: "09/27/2015"
+output: pdf_document
+---
+
+Exercise 3.1.3 : Suppose we have a universal set U of n elements, and we
+choose two subsets S and T at random, each with m of the n elements. What
+is the expected value of the Jaccard similarity of S and T ?
+
+\pagebreak
+
+Exercise 3.3.3 : In Fig. 3.5 is a matrix with six rows.
+
+(a) Compute the minhash signature for each column if we use the following
+three hash functions: h 1 (x) = 2x + 1 mod 6; h 2 (x) = 3x + 2 mod 6;
+h 3 (x) = 5x + 2 mod 6.
+
+(b) Which of these hash functions are true permutations?
+
+(c) How close are the estimated Jaccard similarities for the six pairs of columns
+to the true Jaccard similarities?
+
+\pagebreak
+
+Exercise 3.5.5 : Compute the cosines of the angles between each of the fol-
+lowing pairs of vectors.
+(a) (3, -1, 2) and (-2, 3, 1).
+(b) (1, 2, 3) and (2, 4, 6).
+(c) (5, 0, -4) and (-1, -6, 2).
+(d) (0, 1, 1, 0, 1, 1) and (0, 0, 1, 0, 0, 0).
+
+\pagebreak
+
+Exercise 3.7.1 : Suppose we construct the basic family of six locality-sensitive
+functions for vectors of length six. For each pair of the vectors 000000, 110011,
+010101, and 011100, which of the six functions makes them candidates?
