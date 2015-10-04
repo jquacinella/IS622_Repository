@@ -11,28 +11,268 @@ is the expected value of the Jaccard similarity of S and T ?
 
 \pagebreak
 
-Exercise 3.3.3 : In Fig. 3.5 is a matrix with six rows.
+# Exercise 3.3.3
+
+In Fig. 3.5 is a matrix with six rows.
+
+$$\begin{array}
+{rrrrr}
+element & S_1 & S_2 & S_3 & S_4 \\
+0 & 0 & 1 & 0 & 1 \\
+1 & 0 & 1 & 0 & 0 \\
+2 & 1 & 0 & 0 & 1 \\
+3 & 0 & 0 & 1 & 0 \\
+4 & 0 & 0 & 1 & 1 \\
+5 & 1 & 0 & 0 & 0
+\end{array}
+$$
+
 
 (a) Compute the minhash signature for each column if we use the following
-three hash functions: h 1 (x) = 2x + 1 mod 6; h 2 (x) = 3x + 2 mod 6;
-h 3 (x) = 5x + 2 mod 6.
+three hash functions: $h_1(x) = 2x + 1 mod 6; h_2(x) = 3x + 2 mod 6; h_3(x) = 5x + 2 mod 6.$
 
 (b) Which of these hash functions are true permutations?
 
 (c) How close are the estimated Jaccard similarities for the six pairs of columns
 to the true Jaccard similarities?
 
+
+## Answer
+
+(a) Lets create a matrix with the has function computed, just ilke page 82 in the textbook:
+
+$$\begin{array}
+{rrrrrrrr}
+row & S_1 & S_2 & S_3 & S_4 & h_1(x) & h_2(x) & h_3(x) \\
+0 & 0 & 1 & 0 & 1 & 1 & 2 & 2 \\
+1 & 0 & 1 & 0 & 0 & 3 & 5 & 1 \\
+2 & 1 & 0 & 0 & 1 & 5 & 2 & 0 \\
+3 & 0 & 0 & 1 & 0 & 1 & 5 & 5 \\
+4 & 0 & 0 & 1 & 1 & 3 & 2 & 4 \\
+5 & 1 & 0 & 0 & 0 & 5 & 5 & 3
+\end{array}
+$$
+
+So far so good. Next we initialize a matrix that consists of all $\inf$:
+
+$$\begin{array}
+{rrrrrrrr}
+row & S_1 & S_2 & S_3 & S_4 \\
+h_1(x) & \infty & \infty & \infty & \infty \\
+h_2(x) & \infty & \infty & \infty & \infty \\
+h_3(x) & \infty & \infty & \infty & \infty
+\end{array}
+$$
+
+Looking at row 0, we have 1's for $S_2$ and $S_4$ so only those columns can change. Since the values from the hash colums are all smaller than $\infty$, the matrix looks like this:
+
+$$\begin{array}
+{rrrrrrrr}
+row & S_1 & S_2 & S_3 & S_4 \\
+h_1(x) & \infty & 1 & \infty & 1 \\
+h_2(x) & \infty & 2 & \infty & 2 \\
+h_3(x) & \infty & 2 & \infty & 2
+\end{array}
+$$
+
+Next row, we follow the same procedure. In this case, we have 1's for only $S_2$, and only the value for $h_3(x)$ changes, since its the only value less than what we have in the matrix currently:
+
+$$\begin{array}
+{rrrrrrrr}
+row & S_1 & S_2 & S_3 & S_4 \\
+h_1(x) & \infty & 1 & \infty & 1 \\
+h_2(x) & \infty & 2 & \infty & 2 \\
+h_3(x) & \infty & 1 & \infty & 2
+\end{array}
+$$
+
+For row with label 2, we get:
+
+$$\begin{array}
+{rrrrrrrr}
+row & S_1 & S_2 & S_3 & S_4 \\
+h_1(x) & 5 & 1 & \infty & 1 \\
+h_2(x) & 2 & 2 & \infty & 2 \\
+h_3(x) & 0 & 1 & \infty & 0
+\end{array}
+$$
+
+For row with label 3, we get:
+
+$$\begin{array}
+{rrrrrrrr}
+row & S_1 & S_2 & S_3 & S_4 \\
+h_1(x) & 5 & 1 & 1 & 1 \\
+h_2(x) & 2 & 2 & 5 & 2 \\
+h_3(x) & 0 & 1 & 5 & 0
+\end{array}
+$$
+
+For row with label 4, we get:
+
+$$\begin{array}
+{rrrrrrrr}
+row & S_1 & S_2 & S_3 & S_4 \\
+h_1(x) & 5 & 1 & 1 & 1 \\
+h_2(x) & 2 & 2 & 2 & 2 \\
+h_3(x) & 0 & 1 & 4 & 0
+\end{array}
+$$
+
+For the last row, our final min-hash signature matrix looks like:
+
+$$\begin{array}
+{rrrrrrrr}
+row & S_1 & S_2 & S_3 & S_4 \\
+h_1(x) & 5 & 1 & 1 & 1 \\
+h_2(x) & 2 & 2 & 2 & 2 \\
+h_3(x) & 0 & 1 & 4 & 0
+\end{array}
+$$
+
+
+(b) Only $h_3(x)$ is a hash function that is a true permutations since there are no collisions amoung the outputs for any of the rows. The other functions have duplicate output values.
+
+(c) Lets calculate the real Jaccard similarities, which is the intersection carindality divided by the union cardinality:
+
+$$\begin{array}
+{cc}
+SIM_{real}(S_1, S_2) = \frac{0}{4} & SIM_{approx}(S_1, S_2) = \frac{1}{3} \\
+SIM_{real}(S_1, S_3) = \frac{0}{4} & SIM_{approx}(S_1, S_3) = \frac{1}{3} \\
+SIM_{real}(S_1, S_4) = \frac{1}{4} & SIM_{approx}(S_1, S_4) = \frac{2}{3} \\
+SIM_{real}(S_2, S_3) = \frac{0}{4} & SIM_{approx}(S_2, S_3) = \frac{2}{3} \\
+SIM_{real}(S_2, S_4) = \frac{1}{4} & SIM_{approx}(S_2, S_4) = \frac{2}{3} \\
+SIM_{real}(S_3, S_4) = \frac{1}{4} & SIM_{approx}(S_3, S_4) = \frac{2}{3}
+\end{array}
+$$
+
 \pagebreak
 
-Exercise 3.5.5 : Compute the cosines of the angles between each of the fol-
-lowing pairs of vectors.
+# Exercise 3.5.5
+
+Compute the cosines of the angles between each of the following pairs of vectors:
+
 (a) (3, -1, 2) and (-2, 3, 1).
 (b) (1, 2, 3) and (2, 4, 6).
 (c) (5, 0, -4) and (-1, -6, 2).
 (d) (0, 1, 1, 0, 1, 1) and (0, 0, 1, 0, 0, 0).
 
+## Answer
+
+The cosine distance metric is the vector dot product divided by the product of the vector $L_2$-norms:
+
+(a) $x = (3, -1, 2) and y = (-2, 3, 1)$.
+The $L_2$ norm for $x$ is $\sqrt(3^2 + (-1)^2 + 2^2) = \sqrt(14)$
+
+The $L_2$ norm for $y$ is $\sqrt((-2)^2 + 3^2 + 1^2) = \sqrt(14)$
+
+The dot product $x \dot y$ is $(3)(-2) + (-1)(3) + (2)(1) = - 6 - 3 + 2 = -7$
+
+Therefore the cosine of the angle between $x$ and $y$ is $\frac{-7}{\sqrt(14)\sqrt(14)} = -0.5$. 
+
+
+(b) $x = (1, 2, 3) and y = (2, 4, 6)$.
+The $L_2$ norm for $x$ is $\sqrt(1^2 + 2^2 + 3^2) = \sqrt(14)$
+
+The $L_2$ norm for $y$ is $\sqrt(2^2 + 4^2 + 6^2) = \sqrt(56)$
+
+The dot product $x \dot y$ is $(1)(2) + (2)(4) + (3)(6) = 28$
+
+Therefore the cosine of the angle between $x$ and $y$ is $\frac{28}{\sqrt(14)\sqrt(56)} = 1$.
+
+
+(c) $x = (5, 0, -4) and y = (-1, -6, 2).$.
+The $L_2$ norm for $x$ is $\sqrt(5^2 + 0^2 + (-4)^2) = \sqrt(41)$
+
+The $L_2$ norm for $y$ is $\sqrt((-1)^2 + (-6)^2 + 2^2) = \sqrt(41)$
+
+The dot product $x \dot y$ is $(5)(-1) + (0)(-6) + (-4)(2) = -13$
+
+Therefore the cosine of the angle between $x$ and $y$ is $\frac{-13}{\sqrt(41)\sqrt(41)} = -0.317$.
+
+
+(d) $x = (0, 1, 1, 0, 1, 1) and y = (0, 0, 1, 0, 0, 0).$.
+The $L_2$ norm for $x$ is $\sqrt(4) = 2$
+
+The $L_2$ norm for $y$ is $\sqrt(1)$
+
+The dot product $x \dot y$ is $(0)(0) + (1)(0) + (1)(1) + (0)(0) + (1)(0) + (1)(0) = 1$
+
+Therefore the cosine of the angle between $x$ and $y$ is $\frac{1}{2}$.
+
+
+
 \pagebreak
 
-Exercise 3.7.1 : Suppose we construct the basic family of six locality-sensitive
+# Exercise 3.7.1
+
+Suppose we construct the basic family of six locality-sensitive
 functions for vectors of length six. For each pair of the vectors 000000, 110011,
 010101, and 011100, which of the six functions makes them candidates?
+
+## Answer
+
+Lets define the 6 hash functions as $h_i(x)$, which returns the $i$-th bit in the vector $x$. Therefore, two values will collide, or make them candidates for similarity testing, when they agree on their $i$-th value.
+
+So, the pairs are as follows:
+
+000000 and 110011 will have $h_3$ and $h_4$ make them candidates
+
+000000 and 010101 will have $h_1$, $h_3$ and $h_5$ make them candidates
+
+000000 and 011100 will have $h_1$, $h_5$ and $h_6$ make them candidates
+
+110011 and 010101 will have $h_2$, $h_3$ and $h_6$ make them candidates
+
+110011 and 011100 will have $h_2$ make them candidates
+
+010101 and 011100 will have $h_1$, $h_2$, $h_4$ and $h_5$ make them candidates
+
+\pagebreak
+
+Code: Write an R function `shingle(x, k)` that generates k-shingles from a given character vector x.
+
+
+```{r}
+require("sets");
+
+# Terrible implementation of shingles() function
+## Loops over starting positions and size k, generating substrings
+## and returning a set of k-shingles
+shingles <- function(x, k) {
+  # Create empty set
+  s <- canonicalize_set_and_mapping(c());
+  
+  # Loop over every position in string ...
+  for (i in 1:nchar(x)) {
+    # Loop over various shingle sizes ...
+    for (j in 1:k) {
+      # Then create shingles starting from position with size j
+      # and do set-union with set
+      s <- s + set(substring(x, i, i+j-1));
+    }
+  }
+  
+  # Return set
+  s
+}
+```
+
+```{r}
+# Slightly better but could be simpler without use of unlist, etc
+shingles2 <- function(x, k) {
+  canonicalize_set_and_mapping(unlist(lapply(1:nchar(x), function(l) { lapply(1:k, function(k_shin) {as.character(substr(x, l, l+k_shin))})})))
+}
+```
+
+Examples:
+
+```{r}
+print(shingles("james", 2));
+print(shingles("This is the title of some article", 5));
+```
+
+```{r}
+print(shingles2("james", 2)$set);
+print(shingles2("This is the title of some article", 5)$set);
+```
