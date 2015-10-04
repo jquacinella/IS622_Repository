@@ -5,10 +5,29 @@ date: "09/27/2015"
 output: pdf_document
 ---
 
-Exercise 3.1.3 : Suppose we have a universal set U of n elements, and we
+# Exercise 3.1.3
+
+Suppose we have a universal set U of n elements, and we
 choose two subsets S and T at random, each with m of the n elements. What
 is the expected value of the Jaccard similarity of S and T ?
 
+## Answers
+
+The Jaccard similarity of two sets $S$ and $T$ is defined by the number of common elements divided by the total number of elements in the union of those sets. We can define this in terms of the number of overlapping elements, $k$, as such:
+
+$$SIM(S,T) = \frac{k}{2m - k}$$
+
+where $m$ is the total number of elements in $S$ or $T$. To find the expected value, we need to evaluate:
+
+$$E[SIM(S,T)] = \sum_{k=0}^{m} \left( SIM(S,T) * P(SIM(S,T)) \right)$$
+$$ = \sum_{k=0}^{m} \left( \frac{k}{2m - k} * P(SIM(S,T)) \right) $$
+
+Question is, what is the probability of having $k$ overlapping elements? The total number of ways to choose $m$ elements for $T$ (assuming we have already chosen elements for $S$) is ${n}\choose{m}$. The total number of ways to choose elements with $k$ elements overlapping with $S$ is ${m}\choose{k}$ (choosing $k$ elements from $m$ elements in $S$) times ${n - m}\choose{m - k}$. Putting this all toegther we have:
+
+$$ = \sum_{k=0}^{m} \left( \frac{k}{2m - k} * P(SIM(S,T)) \right) $$
+$$ = \sum_{k=0}^{m} \left( \frac{k}{2m - k} * \frac{ {{m}\choose{k}} {{n - m}\choose{m - k}} }{ {{n}\choose{m}} } \right)$$
+
+I do not htink I can simplify this any more.
 \pagebreak
 
 # Exercise 3.3.3
@@ -161,7 +180,7 @@ Compute the cosines of the angles between each of the following pairs of vectors
 
 The cosine distance metric is the vector dot product divided by the product of the vector $L_2$-norms:
 
-(a) $x = (3, -1, 2) and y = (-2, 3, 1)$.
+(a) $x = (3, -1, 2)$ and $y = (-2, 3, 1)$.
 The $L_2$ norm for $x$ is $\sqrt(3^2 + (-1)^2 + 2^2) = \sqrt(14)$
 
 The $L_2$ norm for $y$ is $\sqrt((-2)^2 + 3^2 + 1^2) = \sqrt(14)$
@@ -171,7 +190,7 @@ The dot product $x \dot y$ is $(3)(-2) + (-1)(3) + (2)(1) = - 6 - 3 + 2 = -7$
 Therefore the cosine of the angle between $x$ and $y$ is $\frac{-7}{\sqrt(14)\sqrt(14)} = -0.5$. 
 
 
-(b) $x = (1, 2, 3) and y = (2, 4, 6)$.
+(b) $x = (1, 2, 3)$ and $y = (2, 4, 6)$.
 The $L_2$ norm for $x$ is $\sqrt(1^2 + 2^2 + 3^2) = \sqrt(14)$
 
 The $L_2$ norm for $y$ is $\sqrt(2^2 + 4^2 + 6^2) = \sqrt(56)$
@@ -181,7 +200,7 @@ The dot product $x \dot y$ is $(1)(2) + (2)(4) + (3)(6) = 28$
 Therefore the cosine of the angle between $x$ and $y$ is $\frac{28}{\sqrt(14)\sqrt(56)} = 1$.
 
 
-(c) $x = (5, 0, -4) and y = (-1, -6, 2).$.
+(c) $x = (5, 0, -4)$ and $y = (-1, -6, 2).$.
 The $L_2$ norm for $x$ is $\sqrt(5^2 + 0^2 + (-4)^2) = \sqrt(41)$
 
 The $L_2$ norm for $y$ is $\sqrt((-1)^2 + (-6)^2 + 2^2) = \sqrt(41)$
@@ -191,7 +210,7 @@ The dot product $x \dot y$ is $(5)(-1) + (0)(-6) + (-4)(2) = -13$
 Therefore the cosine of the angle between $x$ and $y$ is $\frac{-13}{\sqrt(41)\sqrt(41)} = -0.317$.
 
 
-(d) $x = (0, 1, 1, 0, 1, 1) and y = (0, 0, 1, 0, 0, 0).$.
+(d) $x = (0, 1, 1, 0, 1, 1)$ and $y = (0, 0, 1, 0, 0, 0).$.
 The $L_2$ norm for $x$ is $\sqrt(4) = 2$
 
 The $L_2$ norm for $y$ is $\sqrt(1)$
