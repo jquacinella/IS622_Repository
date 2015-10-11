@@ -1,0 +1,125 @@
+---
+title: "IS622 Week5 SparkR Confirmation and Stream Example"
+author: "James Quacinella"
+date: "10/04/2015"
+output: pdf_document
+---
+
+# Initial Setup
+
+```{r results='hide'}
+# Setup SparkR
+Sys.setenv(SPARK_HOME="/home/james/Software/spark-1.4.1-bin-hadoop2.6")
+library(SparkR, lib.loc = "/home/james/Software/spark-1.4.1-bin-hadoop2.6/R/lib")
+sc <- sparkR.init()
+sqlContext <- sparkRSQL.init(sc)
+```
+
+# Confirm SparkR is Working 
+
+The following code (from example blog post) proves SparkR and Spark work together:
+
+```{r cache=TRUE, results='hold'}
+# Read in textfile
+setwd(Sys.getenv("SPARK_HOME"))
+text_file <- SparkR:::textFile(sc, 'README.md')
+
+# Show line counts
+count(text_file)
+
+# Read first line
+take(text_file, 1)
+
+# # Read  all lines
+# take(text_file, count(text_file))
+# 
+# # Filter out and collect lines with word spark in it
+# linesWithSpark <- SparkR:::filterRDD(text_file, function(line) { 
+#   grepl("Spark", line)
+# })
+# collect(linesWithSpark)
+```
+
+
+# Week5 Description 
+
+> As a simple exercise, decide what type of data you want to collect and count from the dataset and what significance the counting has. Discuss why you chose this dataset, what data you plan on filtering out of the dataset, and what you plan on counting. Assuming that you are unable to collect every record, what is your sampling methodology? Explain the significance of the counts for your specific example. Comment on another student's methodology. Is the methodology sound or not? Why? How can it be improved?
+
+Like many other people, I wanted to work with twitter data. I will stream tweets from Twitter for the #politics hashtag. I will not be doing any filtering, just counting the usernames that get mentioned in the tweets. I do this by parsing each tweet and creating a df just full of usernames. I load this into R and us aggregation functions to find counts. In this case, I only stream 1000 tweets, so I am not continuously streaming in data (though I would like to know how to do that; we would need to batch data from the twiiter package, and I assume we can just rbind to the spark dataframe asm ore data comes in)
+
+
+# Week5 Setup
+
+Lets setup the twitteR module:
+
+```{r}
+library(twitteR)
+
+setup_twitter_oauth('yBMKyokT0Io0g9sXnCJ6ZZyYB', 
+                    'B9v58Sm06hRtHpYYoHpFVGb5BEpAUWAORIPumqfMMdM7NwemX4', 
+                    '16562593-mxuDgZWbfnT4Nxdq7gXQe3K1HkRrw8PWkzQpOZsjp',
+                    'qaafVHWbQMlkZ97V9wIE8o7pJwQObIS91blJHYEjCwMZd')
+```
+
+# Streaming Data From Twitter
+
+First we load some tweets from the #politics hashtag, to then be processed for what usernames each tweet mentions. We store all these names in a new dataframe, and then submit that dataframe to spark:
+
+```{r cache=TRUE}
+# Grab tweets and convert to df
+tweets <- searchTwitter("#politics", n=1000)
+
+# Function to take in tweet row and return list of usernames mentioned in tweet
+getUsernames <- function(tweet) {
+  content <- tweet$text
+  usernames <- unlist(lapply(unlist(strsplit(content, " ")), 
+                             function(word) { 
+                               if (substr(word,1,1) == "@") {
+                                 return(tolower(gsub("[[:punct:]]", "", word)))
+                               }
+                             }))
+  usernames <- usernames[ !is.null(usernames) ]
+  usernames
+}
+
+# Function to take in tweet row and return list of hashtags mentioned in tweet
+# Same as above really, but filtering source hashtags (not sure why its not working)
+getHashtags <- function(tweet) {
+  content <- tweet$text
+  hashtags <- unlist(lapply(unlist(strsplit(content, " ")), 
+                             function(word) { 
+                               if (substr(word,1,1) == "#" && word != "#politics") {
+                                 return(tolower(gsub("[[:punct:]]", "", word)))
+                               }
+                             }))
+  hashtags <- hashtags[ !is.null(hashtags) ]
+  hashtags
+}
+
+# Pull out user names from tweets 
+usernames <- unlist(lapply(tweets, getUsernames))
+usernames.df <- data.frame(username=usernames)
+
+# Pull out user names from tweets 
+hashtags <- unlist(lapply(tweets, getHashtags))
+hashtags.df <- data.frame(hashtag=hashtags)
+
+# Create spark data frame from this list of users
+usernames.sdf <- createDataFrame(sqlContext, usernames.df)
+hashtags.sdf <- createDataFrame(sqlContext, hashtags.df)
+```
+
+Now we will do some simple aggregation, counting the number of usernames seen in the stream:
+
+```{r}
+# This URL helped understand these functions: https://spark.apache.org/docs/latest/sparkr.html
+username_results <- summarize(group_by(usernames.sdf, usernames.sdf$username), counts=n(usernames.sdf$username))
+collect(arrange(username_results, desc(username_results$counts)))
+```
+
+Lets count the number of hashtags seen in the stream:
+
+```{r}
+hashtag_results <- summarize(group_by(hashtags.sdf, hashtags.sdf$hashtag), counts=n(hashtags.sdf$hashtag))
+collect(arrange(hashtag_results, desc(hashtag_results$counts)))
+```
