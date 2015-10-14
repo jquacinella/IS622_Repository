@@ -7,8 +7,7 @@ output: pdf_document
 
 # Exercise 7.1.3 (section 7.1.4)
 
-Suppose we have a d-dimensional Euclidean space. Consider vectors whose components are only +1 or -1 in each dimension. Note that each vector has length $d$, so the product of their lengths (denominator in the formula for the cosine of the angle between them) is $d$. If we chose each component independently, and a component is as likely to be +1 as -1, what is the distribution of the value of the numerator of the formula (i.e., the sum of the products of the corresponding components from each vector)? What can you say about the expected value of the cosine of the angle between the vectors,
-as $d$ grows large?
+Suppose we have a d-dimensional Euclidean space. Consider vectors whose components are only +1 or -1 in each dimension. Note that each vector has length $d$, so the product of their lengths (denominator in the formula for the cosine of the angle between them) is $d$. If we chose each component independently, and a component is as likely to be +1 as -1, what is the distribution of the value of the numerator of the formula (i.e., the sum of the products of the corresponding components from each vector)? What can you say about the expected value of the cosine of the angle between the vectors, as $d$ grows large?
 
 ## Answer
 
@@ -25,9 +24,6 @@ Perform a hierarchical clustering of the one-dimensional set of points 1, 4, 9, 
 ## Answer
 
 ```{r}
-# Initial cluster assignments
-clusters <- list( c(1), c(4), c(9), c(16), c(25), c(36), c(49), c(64), c(81))
-
 # Print clusters in a nicer way
 print_clusters <- function(clusters) {
   for(i in 1:length(clusters)) {
@@ -36,19 +32,26 @@ print_clusters <- function(clusters) {
   print("=================")
 }
 
+# 1 dimensional euclid distance function (same as abs value)
 euclid_dist <- function(pair) {
-  return(sqrt(pair[[1]]^2 + pair[[2]]^2)); 
+  return( abs(pair[[1]] - pair[[2]]) ); 
 }
 
-# Find euclidean distance between cluster centroids given indicies of clusters to compare
-euclid_dist.centroids <- function(pair_idxs) { 
-  x <- mean( clusters[[ pair_idxs[[1]] ]])   # Find centroid of first cluster of pair
-  y <- mean( clusters[[ pair_idxs[[2]] ]])   # Find centroid of second cluster of pair
-  return(sqrt(x^2 + y^2)); 
+euclid_dist.centroids.wrapper <- function(clusters) {
+  # Find euclidean distance between cluster centroids given indicies of clusters to compare
+  euclid_dist.centroids <- function(pair_idxs) { 
+    x <- mean( clusters[[ pair_idxs[[1]] ]] )   # Find centroid of first cluster of pair
+    y <- mean( clusters[[ pair_idxs[[2]] ]] )   # Find centroid of second cluster of pair
+    return(euclid_dist(c(x,y))); 
+  }
+  
+  return(euclid_dist.centroids)
 }
 
+run_heir <- function(dist_func) {
+  # Initial cluster assignments
+  clusters <- list( c(1), c(4), c(9), c(16), c(25), c(36), c(49), c(64), c(81))
 
-run_heir <- function(clusters, dist) {
   while(length(clusters) > 1) {
     # DEBUG: print cluster state
     print("CLUSTERS:"); print_clusters(clusters)
@@ -58,7 +61,9 @@ run_heir <- function(clusters, dist) {
     
     # Minimum distance calculation to find which cluster indicies we need to merge
     pairs_of_clusters <- combn(cluster_idxs, 2, simplify = FALSE)
-    merge_idxs <- pairs_of_clusters[[which.min(unlist(lapply(pairs_of_clusters, dist)))]]
+    distances <- unlist(lapply(pairs_of_clusters, dist_func(clusters) ))
+    print( paste("Minimum dist: ", min(distances)) );
+    merge_idxs <- pairs_of_clusters[[ which.min(distances) ]]
     
     # DEBUG: print which clusters we are merging
     print(paste("Merging cluster idx", merge_idxs[[1]], " and cluster idx", merge_idxs[[2]]))
@@ -75,7 +80,7 @@ run_heir <- function(clusters, dist) {
   print_clusters(clusters)
 }
 
-run_heir(clusters, euclid_dist.centroids)
+run_heir(euclid_dist.centroids.wrapper)
 ```
 
 \pagebreak
@@ -86,22 +91,36 @@ run_heir(clusters, euclid_dist.centroids)
 How would the clustering of Example 7.2 change if we used for the distance between two clusters:
 
 (a) The minimum of the distances between any two points, one from each cluster.
+(b) The average of the distances between pairs of points, one from each of the two clusters.
+
+## Answer
+
+(a) The minimum of the distances between any two points, one from each cluster.
 
 ```{r}
-# Find minimum euclidean distance between all cluster points, given indicies of clusters to compare
-euclid_dist.min <- function(pair_idxs) { 
-  min(unlist(lapply(combn(c(clusters[[ pair_idxs[[1]] ]], clusters[[ pair_idxs[[2]] ]]), 2, simplify = FALSE),  euclid_dist))   )  
+euclid_dist.min.wrapper <- function(clusters) {
+  # Find minimum euclidean distance between all cluster points, given indicies of clusters to compare
+  euclid_dist.min <- function(pair_idxs) { 
+    min(apply(expand.grid(clusters[[ pair_idxs[[1]] ]], clusters[[ pair_idxs[[2]] ]]), 1, euclid_dist))
+  }
+    
+  return(euclid_dist.min)
 }
 
-# Initial cluster assignments
-clusters <- list( c(1), c(4), c(9), c(16), c(25), c(36), c(49), c(64), c(81))
-
-run_heir(clusters, euclid_dist.min)
+run_heir(euclid_dist.min.wrapper)
 ```
 
 (b) The average of the distances between pairs of points, one from each of the two clusters.
 
+```{r}
+euclid_dist.avg.wrapper <- function(clusters) {
+  # Find average euclidean distance between all cluster points, given indicies of clusters to compare
+  euclid_dist.avg <- function(pair_idxs) { 
+    mean(apply(expand.grid(clusters[[ pair_idxs[[1]] ]], clusters[[ pair_idxs[[2]] ]]), 1, euclid_dist))
+  }
+    
+  return(euclid_dist.avg)
+}
 
-## Answer
-
-\pagebreak
+run_heir(euclid_dist.avg.wrapper)
+```
