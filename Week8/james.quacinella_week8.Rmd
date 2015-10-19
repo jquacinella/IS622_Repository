@@ -23,6 +23,15 @@ Perform a hierarchical clustering of the one-dimensional set of points 1, 4, 9, 
 
 ## Answer
 
+To help read the code:
+
+* clusters is stored as a list
+* print_clusters prints clusters in a nice way
+* euclid_dist computes euclidean distance between to numbers, passed in as a list
+* euclid_dist.centroids.wrapper is what computers the distance between two clusters by centroids, passed in as a list. NOTE: I had to use a 'closure' since I had issues with cluster not updating
+* The other wrapper functions computer other cluster distance metrics as needed
+* run_heir runs heirarchical clustering, given a cluster distance metric
+
 ```{r}
 # Print clusters in a nicer way
 print_clusters <- function(clusters) {
@@ -95,7 +104,12 @@ How would the clustering of Example 7.2 change if we used for the distance betwe
 
 ## Answer
 
+Using different metrics for distances between clusters, we would expect different clustering.
+
 (a) The minimum of the distances between any two points, one from each cluster.
+
+I would expect this to get clustered in a simplistic way, since for this data, the minimum distance between clusters will always point to the next point in the list:
+
 
 ```{r}
 euclid_dist.min.wrapper <- function(clusters) {
