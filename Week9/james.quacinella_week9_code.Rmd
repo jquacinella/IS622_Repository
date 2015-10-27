@@ -1,0 +1,263 @@
+---
+title: "IS622 Lustering pt 2 Code"
+author: "James Quacinella"
+date: "10/25/2015"
+output: pdf_document
+---
+
+# Week 8
+
+## Data
+
+I could not use my original dataset of tweets, as I could not really think of an example of what data to use for clustering. Using textual features, then it would be non-euclidean, and I could not figure out a good euclidean way of measuring distances between meaningful points.
+
+For Week 8's KMeans via RHadoop, I used a data set I found online from UCI: http://archive.ics.uci.edu/ml/datasets/User+Knowledge+Modeling I chose this data set because it is euclidean, which means I could use KMeans and CURE (I did not want to attempt the other algorithm as it seems above my head to implement right now), and the data looks normalized enough to not worry about pre-processing.
+
+I used the RHadoop tutorial notes for K-means. I did not a get a chance to submit code for week 3 and since I lost points (and don't want to lose time), I am using a pre-made implementation.
+
+```{r results='hide'}
+library(rJava)
+library(rhdfs)
+hdfs.init()
+library(rmr2)
+```
+
+
+## Week 8 - KMeans Hadoop
+
+Lets load the data:
+
+```{r}
+# Load Data
+#setwd("/home/james/Code/Masters//IS622/Week9")
+clusterdata <- read.csv('data.csv')
+
+# Params: I expect 7  clusters
+num_clusters = 10;
+```
+
+```{r cache=TRUE}
+# https://github.com/RevolutionAnalytics/rmr2/blob/master/pkg/tests/kmeans.R
+kmeans.mr = 
+  function(
+    P, 
+    num.clusters, 
+    num.iter, 
+    combine, 
+    in.memory.combine) {
+    dist.fun = 
+      function(C, P) {
+        apply(
+          C,
+          1, 
+          function(x) 
+            colSums((t(P) - x)^2))}
+    
+    kmeans.map = 
+      function(., P) {
+        nearest = {
+          if(is.null(C)) 
+            sample(
+              1:num.clusters, 
+              nrow(P), 
+              replace = TRUE)
+          else {
+            D = dist.fun(C, P)
+            nearest = max.col(-D)}}
+        if(!(combine || in.memory.combine))
+          keyval(nearest, P) 
+        else 
+          keyval(nearest, cbind(1, P))}
+
+    kmeans.reduce = {
+      if (!(combine || in.memory.combine) ) 
+        function(., P) 
+          t(as.matrix(apply(P, 2, mean)))
+      else 
+        function(k, P) 
+          keyval(
+            k, 
+            t(as.matrix(apply(P, 2, sum))))}
+
+    
+    C = NULL
+    for(i in 1:num.iter ) {
+      C = 
+        values(
+          from.dfs(
+            mapreduce(
+              P, 
+              map = kmeans.map,
+              reduce = kmeans.reduce)))
+      if(combine || in.memory.combine)
+        C = C[, -1]/C[, 1]
+
+      
+      if(nrow(C) < num.clusters) {
+        C = 
+          rbind(
+            C,
+            matrix(
+              rnorm(
+                (num.clusters - 
+                   nrow(C)) * nrow(C)), 
+              ncol = nrow(C)) %*% C) }}
+        C}
+
+
+# Sample runs
+out = list()
+
+# For now only do local
+for(be in c("local")) {
+  # Set RMR backend and set random seed
+  rmr.options(backend = be)
+  set.seed(0)
+
+#   # Input data (random)
+#   P = 
+#     do.call(
+#       rbind, 
+#       rep(
+#         list(
+#           matrix(
+#             rnorm(10, sd = 10), 
+#             ncol=2)), 
+#         20)) + 
+#     matrix(rnorm(200), ncol =2)
+
+  # Input data is from europe
+  P = clusterdata
+  
+  # Generate output from Hadoop job
+  out[[be]] = 
+    kmeans.mr(
+      to.dfs(P),
+      num.clusters = num_clusters, 
+      num.iter = 5,
+      combine = FALSE,
+      in.memory.combine = FALSE)
+}
+
+# Show output from local run
+out$local[order(out$local[,1]), ]
+
+# Show output from hadoop run
+#out$hadoop[order(out$hadoop[,1]), ]
+```
+
+\pagebreak
+
+## Builtin KMeans
+
+```{r}
+# https://stat.ethz.ch/R-manual/R-devel/library/stats/html/kmeans.html
+library(stats)
+model.kmeans.builtin <- kmeans(P, num_clusters)
+model.kmeans.builtin$centers[order(model.kmeans.builtin$centers[,1]),]
+```
+
+\pagebreak
+
+## Comparison of KMean Clusters
+
+Deprecated: when using 2-d data from the tutorial, I could grpah cluster centers. Not possible now but including for notes:
+
+```{r eval=FALSE}
+library(ggplot2)
+ggplot(data=as.data.frame(out$local)) + 
+  geom_point(aes(x=V1, y=V2, colour='blue')) + 
+  geom_point(data = as.data.frame(model.kmeans.builtin$centers), aes(x=V1, y=V2, colour='red')) +
+  scale_color_manual(values = c("red", "black"),
+                     labels = c("KMeans Hadoop",
+                                "KMeans Stats Module")) +
+  ggtitle("KMeans Centers for P") +
+  xlab("X-coord") + ylab("Y-coord")
+```
+
+\pagebreak
+
+# Week 9
+
+I will continue to work on this, but implementing these algorithms seems to be above my head for the time I can allocate to the class. Here I will outline the algorithm and show some psuedo code I hope to fill in.
+
+## Pre-Hadoop Phase
+
+1. Take a small sample of the data and cluster it in main memory. 
+
+2. Select a small set of points from each cluster to be representative points. These points should be chosen to be as far from one another as possible, using the method described in Section 7.3.2.
+
+After all of this, we have a list of clusters, each with a set of representative points and a cluster center, or centroid.
+
+3. Move each of the representative points a fixed fraction of the distance between its location and the centroid of its cluster. Perhaps 20% is a good fraction to choose. 
+
+After all of this, we have a list of clusters, each with a set of representative points (that are now a little closer to the centroid of the cluster) and a cluster center, or centroid.
+
+## Hadoop Phase
+
+The next phase of CURE is to merge two clusters if they have a pair of representative points, one from each cluster, that are sufficiently close. That means, we will have multiple map-reduce phases until we detect that the cluster assignments have not changed since last time. The map phase will generate key value pairs of the form $(1, (cluster_idx1, cluster_idx2, dist))$. The reduce task gets all the keys, since they are all one, and will merge clusters if any $dist$ is less than some set threshold. The hadoop phase stops when there are no new cluster asisgnments.
+
+## Post Hadoop
+
+This is not specific to CURE, but once we have the cluster asisgnments, we can go back to the whole data set and assign a a cluster to each point.
+
+
+```{r}
+cure.mr = function(P, cluster.dist.threshold, max.iter) {
+    # Filter P, the data set, to only take a small portion of the data
+  
+    # From this small selection, run heirarchical clustering to get an initial clustering
+  
+    # For each cluster
+      # Find all points in cluster
+      # Computer centroid
+      # Move all points 20% closer in each direction / dimension
+    
+  
+    cure.map = function(., P) {
+      # For each cluster
+        # For every other cluster
+          # Generate (1, (cluster1, cluster2, dist(cluster1, cluster2))) key value pairs
+    }
+
+    
+    cure.reduce = {
+      # For each key value pairs
+        # If dist < cluster.dist.threshold
+          # Merge cluster1 and cluster2
+          # Which means delete cluster1 and cluster2 from assignments, use all points from those
+          # clusters to re-calc the new centroid
+      
+      # Output new cluster mappings
+    }
+
+    
+    # Main control of algo
+    
+    # Place to store new clusters
+    C_new = NULL
+    
+    # Looping just to keep a maximum number of loops
+    for(i in 1:max.iter ) {
+      # Map-reduce call will use C as a global, copying it, updating it 
+      # and returning it via DFS
+      C_new = values(
+              from.dfs(
+                mapreduce(P, 
+                          map = cure.map,
+                          reduce = cure.reduce)
+              )
+            )
+      
+      if (C == C_new) {
+        break; # we are done when there is no change
+      }
+      else {
+        C = C_new # Update cluster assignments
+      }
+    }
+
+  # Return clusters
+  C
+}
+```
