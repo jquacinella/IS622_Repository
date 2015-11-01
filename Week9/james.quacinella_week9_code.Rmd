@@ -1,5 +1,5 @@
 ---
-title: "IS622 Lustering pt 2 Code"
+title: "IS622 Clustering pt 2 Code"
 author: "James Quacinella"
 date: "10/25/2015"
 output: pdf_document
