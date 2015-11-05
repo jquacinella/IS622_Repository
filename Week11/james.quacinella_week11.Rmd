@@ -24,15 +24,6 @@ Prep:
 require(lsa)
 
 # Utility matrix for problem
-utility.matrix <- data.frame(a=c(4, 0, 2), 
-                            b=c(5, 3, 0),
-                            c=c(0, 4, 1),
-                            d=c(5, 3, 3),
-                            e=c(1, 1, 0),
-                            f=c(0, 2, 4),
-                            g=c(3, 1, 5),
-                            h=c(2, 0, 3))
-
 utility.matrix <- matrix(c(4, 0, 2, 
                             5, 3, 0,
                             0, 4, 1,
