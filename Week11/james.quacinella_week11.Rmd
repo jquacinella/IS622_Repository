@@ -64,27 +64,27 @@ colnames(utility.matrix.boolean) <- c('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
 
 a) Treating the utility matrix as boolean, compute the Jaccard distance between each pair of users
 
-```{r}
-dist.jaccard(utility.matrix.boolean[1,], utility.matrix.boolean[2,])
-dist.jaccard(utility.matrix.boolean[1,], utility.matrix.boolean[3,])
-dist.jaccard(utility.matrix.boolean[2,], utility.matrix.boolean[3,])
+```{r results='hold'}
+dist.jaccard(utility.matrix.boolean[1,], utility.matrix.boolean[2,]) # 0.5
+dist.jaccard(utility.matrix.boolean[1,], utility.matrix.boolean[3,]) # 0.5
+dist.jaccard(utility.matrix.boolean[2,], utility.matrix.boolean[3,]) # 0.5
 ```
 
 b) Repeat Part (a), but use the cosine distance.
 
-```{r}
+```{r results='hold'}
 # cosine(c(4,0,0,5,1,0,0), c(5,5,4,0,0,0,0)) # 0.37986
 # cosine(c(4,0,0,5,1,0,0), c(0,0,0,2,4,5,0)) # 0.322
 
-dist.cosine(as.matrix(utility.matrix)[1,], as.matrix(utility.matrix)[2,]) # 0.6010408
-dist.cosine(as.matrix(utility.matrix)[1,], as.matrix(utility.matrix)[3,]) # 0.6149187
-dist.cosine(as.matrix(utility.matrix)[2,], as.matrix(utility.matrix)[3,]) # 0.5138701
+dist.cosine(as.matrix(utility.matrix)[1,], as.matrix(utility.matrix)[2,]) # 0.3989592
+dist.cosine(as.matrix(utility.matrix)[1,], as.matrix(utility.matrix)[3,]) # 0.3850813
+dist.cosine(as.matrix(utility.matrix)[2,], as.matrix(utility.matrix)[3,]) # 0.4861299
 ```
 
 c) Treat ratings of 3, 4, and 5 as 1 and 1, 2, and blank as 0. Compute the Jaccard distance between each pair of users.
 
 
-```{r}
+```{r  results='hold'}
 # Treat ratings of 3, 4, and 5 as 1 and 1, 2, and blank as 0.
 make.grouped <- function(user) { 
   return(lapply(user, function(x) {
@@ -111,15 +111,15 @@ dist.jaccard(utility.matrix.grouped[2,], utility.matrix.grouped[3,]) # 0.8333333
 
 d) Repeat Part (c), but use the cosine distance.
 
-```{r}
-dist.cosine(as.matrix(utility.matrix.grouped)[1,], as.matrix(utility.matrix.grouped)[2,]) # 0.5773503
+```{r results='hold'}
+dist.cosine(as.matrix(utility.matrix.grouped)[1,], as.matrix(utility.matrix.grouped)[2,]) # 0.42264
 dist.cosine(as.matrix(utility.matrix.grouped)[1,], as.matrix(utility.matrix.grouped)[3,]) # 0.5
-dist.cosine(as.matrix(utility.matrix.grouped)[2,], as.matrix(utility.matrix.grouped)[3,]) # 0.2886751
+dist.cosine(as.matrix(utility.matrix.grouped)[2,], as.matrix(utility.matrix.grouped)[3,]) # 0.7113
 ```
 
 e) Normalize the matrix by subtracting from each nonblank entry the average value for its user.
 
-```{r}
+```{r results='hold'}
 utility.matrix.normalized <- utility.matrix;
 utility.matrix.normalized[1,] <- utility.matrix.normalized[1,] - mean(utility.matrix.normalized[1,]);
 utility.matrix.normalized[2,] <- utility.matrix.normalized[2,] - mean(utility.matrix.normalized[2,]);
@@ -129,7 +129,7 @@ utility.matrix.normalized
 
 f) Using the normalized matrix from Part (e), compute the cosine distance between each pair of users.
 
-```{r}
+```{r results='hold'}
 dist.cosine(as.matrix(utility.matrix.normalized)[1,], as.matrix(utility.matrix.normalized)[2,]) # 1.046374
 dist.cosine(as.matrix(utility.matrix.normalized)[1,], as.matrix(utility.matrix.normalized)[3,]) # 1.037662
 dist.cosine(as.matrix(utility.matrix.normalized)[2,], as.matrix(utility.matrix.normalized)[3,]) # 1.288179
