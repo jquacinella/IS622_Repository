@@ -120,10 +120,19 @@ dist.cosine(as.matrix(utility.matrix.grouped)[2,], as.matrix(utility.matrix.grou
 e) Normalize the matrix by subtracting from each nonblank entry the average value for its user.
 
 ```{r results='hold'}
+# Ugh god this is terrible; I should have stuck with NAs
 utility.matrix.normalized <- utility.matrix;
-utility.matrix.normalized[1,] <- utility.matrix.normalized[1,] - mean(utility.matrix.normalized[1,]);
-utility.matrix.normalized[2,] <- utility.matrix.normalized[2,] - mean(utility.matrix.normalized[2,]);
-utility.matrix.normalized[3,] <- utility.matrix.normalized[3,] - mean(utility.matrix.normalized[3,]);
+
+mean1 <- mean(utility.matrix.normalized[1, utility.matrix.normalized[1,] != 0])
+mean2 <- mean(utility.matrix.normalized[2, utility.matrix.normalized[2,] != 0])
+mean3 <- mean(utility.matrix.normalized[3, utility.matrix.normalized[3,] != 0])
+
+utility.matrix.normalized[1,] <- unlist(lapply(utility.matrix.normalized[1,], function(x) { if(x!=0) {x - mean1;} else {x;}}));
+utility.matrix.normalized[2,] <- unlist(lapply(utility.matrix.normalized[2,], function(x) { if(x!=0) {x - mean2;} else {x;}}));
+utility.matrix.normalized[3,] <- unlist(lapply(utility.matrix.normalized[3,], function(x) { if(x!=0) {x - mean3;} else {x;}}))
+
+# Final normalized matrix
+colnames(utility.matrix.grouped) <- c('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h')
 utility.matrix.normalized
 ```
 
