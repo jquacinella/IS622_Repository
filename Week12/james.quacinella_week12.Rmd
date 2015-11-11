@@ -1,0 +1,95 @@
+---
+title: "Week 12 - Recommendation Systems part 2"
+author: "James Quacinella"
+date: "11/10/2015"
+output: pdf_document
+---
+
+# Exercise 9.4.2
+
+If we wish to start out, as in Fig. 9.10, with all U and V entries set to the same value, what value minimizes the RMSE for the matrix M of our running example?
+
+## Answer
+
+We have a $5 x 5 M$ matrix which we want to decompose into $d=2$ dimensional $U$ and $V$
+matricies.
+
+"If we have chosen d as the lengths of the short sides of U and V , and a is the average nonblank element of M , then the elements of U and V should be sqrt(a/d)."
+
+```{r}
+d <- 2;
+M <- matrix(c(5,2,4,4,3,3,1,2,4,1,2,NA,3,1,4,2,5,4,3,5,4,4,5,4,NA), ncol=5, byrow = TRUE);
+sqrt(mean(M, na.rm = TRUE) / 2); # 1.276885
+```
+
+\pagebreak
+
+# Exercise 9.4.3
+
+```{r}
+# Starting off
+U <- matrix(c(2.6, 1, 1.178, 1, 1, 1, 1, 1, 1, 1), ncol=2);
+V <- matrix(c(1.617,1,1,1,1,1,1,1,1,1), ncol=5);
+  
+M <- matrix(c(5.204, 2.617, 2.905, 2.617, 2.617, 3.6, 2, 2.178, 2, 2, 3.6, 2, 2.178, 2, 2, 3.6, 2, 2.178, 2, 2, 3.6, 2, 2.178, 2, 2), ncol=5)
+
+P <- U %*% V;
+```
+
+## Answer
+
+Starting with the U and V matrices in Fig. 9.16, do the following in order:
+
+(a) Reconsider the value of $u_{11}$ . Find its new best value, given the changes that have been made so far.
+
+```{r}
+max_j <- 5;
+r <- 1;
+s <- 1;
+
+# Find the updated value by alculating the numerator and denominator
+numerator <- sum(sapply(1:max_j, function(j) { V[s, j] * (M[r, j] - sum(U[r, -c(s)] * V[-c(s), j])); }))
+denominator <- sum(sapply(1:max_j, function(j) { V[s, j]**2; }))
+numerator
+denominator
+
+# Update and print U
+U[r, s] <- numerator / denominator
+U
+```
+
+(b) Then choose the best value for $u_{52}$
+
+```{r}
+max_j <- 5;
+r <- 5;
+s <- 2;
+
+# Find the updated value by alculating the numerator and denominator
+numerator <- sum(sapply(1:max_j, function(j) { V[s, j] * (M[r, j] - sum(U[r, -c(s)] * V[-c(s), j])); }))
+denominator <- sum(sapply(1:max_j, function(j) { V[s, j]**2; }))
+numerator
+denominator
+
+# Update and print U
+U[r, s] <- numerator / denominator
+U
+```
+
+(c) Then choose the best value for $v_{22}$.
+
+```{r}
+max_i <- 5;
+r <- 2;
+s <- 2;
+
+# Find the updated value by alculating the numerator and denominator
+numerator <- sum(sapply(1:max_i, function(i) { U[i, r] * (M[i, s] - sum(U[s, -c(r)] * U[-c(r), s])); }))
+denominator <- sum(sapply(1:max_i, function(i) { U[i, r]**2; }))
+numerator
+denominator
+
+# Update and print U
+V[r, s] <- numerator / denominator
+V
+```
