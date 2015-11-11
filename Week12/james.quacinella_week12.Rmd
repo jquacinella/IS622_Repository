@@ -26,14 +26,18 @@ sqrt(mean(M, na.rm = TRUE) / 2); # 1.276885
 
 # Exercise 9.4.3
 
-```{r}
+```{r results='hold'}
 # Starting off
 U <- matrix(c(2.6, 1, 1.178, 1, 1, 1, 1, 1, 1, 1), ncol=2);
 V <- matrix(c(1.617,1,1,1,1,1,1,1,1,1), ncol=5);
   
 M <- matrix(c(5.204, 2.617, 2.905, 2.617, 2.617, 3.6, 2, 2.178, 2, 2, 3.6, 2, 2.178, 2, 2, 3.6, 2, 2.178, 2, 2, 3.6, 2, 2.178, 2, 2), ncol=5)
 
+# Calculate P
 P <- U %*% V;
+
+# Show initital error
+sqrt(sum((M - P)**2)); # 0.0002650962
 ```
 
 ## Answer
@@ -42,7 +46,7 @@ Starting with the U and V matrices in Fig. 9.16, do the following in order:
 
 (a) Reconsider the value of $u_{11}$ . Find its new best value, given the changes that have been made so far.
 
-```{r}
+```{r results='hold'}
 max_j <- 5;
 r <- 1;
 s <- 1;
@@ -56,11 +60,17 @@ denominator
 # Update and print U
 U[r, s] <- numerator / denominator
 U
+
+# Show sum of squared error
+sqrt(sum((M - U %*% V)**2)); # 0.0002333765
+
+# Update P
+P <- U %*% V;
 ```
 
 (b) Then choose the best value for $u_{52}$
 
-```{r}
+```{r results='hold'}
 max_j <- 5;
 r <- 5;
 s <- 2;
@@ -74,17 +84,23 @@ denominator
 # Update and print U
 U[r, s] <- numerator / denominator
 U
+
+# Show sum of squared error
+sqrt(sum((M - U %*% V)**2)); 
+
+# Update P
+P <- U %*% V;
 ```
 
 (c) Then choose the best value for $v_{22}$.
 
-```{r}
+```{r results='hold'}
 max_i <- 5;
 r <- 2;
 s <- 2;
 
 # Find the updated value by alculating the numerator and denominator
-numerator <- sum(sapply(1:max_i, function(i) { U[i, r] * (M[i, s] - sum(U[s, -c(r)] * U[-c(r), s])); }))
+numerator <- sum(sapply(1:max_i, function(i) { U[i, r] * (M[i, s] - sum(U[i, -c(r)] * V[-c(r), s])); }))
 denominator <- sum(sapply(1:max_i, function(i) { U[i, r]**2; }))
 numerator
 denominator
@@ -92,4 +108,10 @@ denominator
 # Update and print U
 V[r, s] <- numerator / denominator
 V
+
+# Show sum of squared error
+sqrt(sum((M - U %*% V)**2));
+
+# Update P
+P <- U %*% V;
 ```
