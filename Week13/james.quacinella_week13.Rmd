@@ -9,9 +9,13 @@ output: pdf_document
 
 # 10.2.1
 
+Figure 10.9 is an example of a social-network graph. Use the Girvan-Newman approach to find the number of shortest paths from each of the following nodes that pass through each of the edges. (a) A (b) B.
+
 \pagebreak 
 
 # 10.2.2 (section 10.2.6)
+
+Using symmetry, the calculations of Exercise 10.2.1 are all you need to compute the betweenness of each edge. Do the calculation.
 
 \pagebreak 
 
