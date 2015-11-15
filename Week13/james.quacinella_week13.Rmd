@@ -4,3 +4,68 @@ author: "James Quacinella"
 date: "11/14/2015"
 output: pdf_document
 ---
+
+
+
+# 10.2.1
+
+\pagebreak 
+
+# 10.2.2 (section 10.2.6)
+
+\pagebreak 
+
+# Exercise 10.4.1
+
+For the graph of Fig. 10.9, construct:
+
+(a) The adjacency matrix.
+(b) The degree matrix.
+(c) The Laplacian matrix.
+
+## Answer
+
+```{r}
+# Setup the degree matrix
+D = matrix(c(2,0,0,0,0,0,0,0,0,
+             0,3,0,0,0,0,0,0,0,
+             0,0,3,0,0,0,0,0,0,
+             0,0,0,3,0,0,0,0,0,
+             0,0,0,0,3,0,0,0,0,
+             0,0,0,0,0,2,0,0,0,
+             0,0,0,0,0,0,3,0,0,
+             0,0,0,0,0,0,0,3,0,
+             0,0,0,0,0,0,0,0,2), ncol=9)
+
+# Setup col and row names
+colnames(D)<-c('A','B','C','D','E','F','G','H','I')
+rownames(D)<-c('A','B','C','D','E','F','G','H','I')
+
+# Write up the adjanceny matrix
+          #  A B C D E F G H I
+A = matrix(c(0,1,1,0,0,0,0,0,0, # A
+             1,0,1,0,0,0,0,1,0, # B
+             1,1,0,1,0,0,0,0,0, # C
+             0,0,1,0,1,1,0,0,0, # D
+             0,0,0,1,0,1,1,0,0, # E
+             0,0,0,1,1,0,0,0,0, # F
+             0,0,0,0,1,0,0,1,1, # G
+             0,1,0,0,0,0,1,0,1, # H
+             0,0,0,0,0,0,1,1,0), ncol=9)
+
+# Setup col and row names
+colnames(A)<-c('A','B','C','D','E','F','G','H','I')
+rownames(A)<-c('A','B','C','D','E','F','G','H','I')
+
+# Calculate Laplacian
+L = D - A
+```
+
+\pagebreak
+
+```{r}
+# Print results
+D
+A
+L
+```
