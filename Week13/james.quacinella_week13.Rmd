@@ -1,0 +1,6 @@
+---
+title: "Week 13 - Social Network Mining"
+author: "James Quacinella"
+date: "11/14/2015"
+output: pdf_document
+---
