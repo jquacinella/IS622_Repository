@@ -35,7 +35,7 @@ V <- matrix(c(1.617,1,1,1,1,1,1,1,1,1), ncol=5);
 P <- U %*% V;
 
 # Show initital error
-sqrt(sum((M - P)**2)); # 0.0002650962
+sqrt(sum((M - P)**2,  na.rm=TRUE)); 
 ```
 
 ## Answer
@@ -49,8 +49,8 @@ max_j <- 5;
 r <- 1;
 s <- 1;
 
-# Find the updated value by alculating the numerator and denominator
-numerator <- sum(sapply(1:max_j, function(j) { V[s, j] * (M[r, j] - sum(U[r, -c(s)] * V[-c(s), j])); }))
+# Find the updated value by calculating the numerator and denominator
+numerator <- sum(sapply(1:max_j, function(j) { V[s, j] * (M[r, j] - sum(U[r, -c(s)] * V[-c(s), j])); }),  na.rm=TRUE)
 denominator <- sum(sapply(1:max_j, function(j) { V[s, j]**2; }))
 numerator
 denominator
@@ -60,7 +60,7 @@ U[r, s] <- numerator / denominator
 U
 
 # Show sum of squared error
-sqrt(sum((M - U %*% V)**2)); # 0.0002333765
+sqrt(sum((M - U %*% V)**2, na.rm=TRUE));
 
 # Update P
 P <- U %*% V;
@@ -74,7 +74,7 @@ r <- 5;
 s <- 2;
 
 # Find the updated value by alculating the numerator and denominator
-numerator <- sum(sapply(1:max_j, function(j) { V[s, j] * (M[r, j] - sum(U[r, -c(s)] * V[-c(s), j])); }))
+numerator <- sum(sapply(1:max_j, function(j) { V[s, j] * (M[r, j] - sum(U[r, -c(s)] * V[-c(s), j])); }),  na.rm=TRUE)
 denominator <- sum(sapply(1:max_j, function(j) { V[s, j]**2; }))
 numerator
 denominator
@@ -84,7 +84,7 @@ U[r, s] <- numerator / denominator
 U
 
 # Show sum of squared error
-sqrt(sum((M - U %*% V)**2)); 
+sqrt(sum((M - U %*% V)**2, na.rm=TRUE)); 
 
 # Update P
 P <- U %*% V;
@@ -98,7 +98,7 @@ r <- 2;
 s <- 2;
 
 # Find the updated value by alculating the numerator and denominator
-numerator <- sum(sapply(1:max_i, function(i) { U[i, r] * (M[i, s] - sum(U[i, -c(r)] * V[-c(r), s])); }))
+numerator <- sum(sapply(1:max_i, function(i) { U[i, r] * (M[i, s] - sum(U[i, -c(r)] * V[-c(r), s])); }),  na.rm=TRUE)
 denominator <- sum(sapply(1:max_i, function(i) { U[i, r]**2; }))
 numerator
 denominator
@@ -108,8 +108,10 @@ V[r, s] <- numerator / denominator
 V
 
 # Show sum of squared error
-sqrt(sum((M - U %*% V)**2));
+sqrt(sum((M - U %*% V)**2, na.rm=TRUE));
 
 # Update P
 P <- U %*% V;
 ```
+
+We can see the error getting smaller and smaller, but I am not 100% sure if I am calculating this correctly. I am trying to stay true to the formula in the book.
