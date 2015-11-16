@@ -1,0 +1,73 @@
+---
+title: "Week 14 - Social Network Graphs 2"
+author: "James Quacinella"
+date: "11/15/2015"
+output: pdf_document
+---
+
+
+# Exercise 10.5.1 (section 10.5.5)
+
+If, in Fig. 10.20 you start the walk from Picture 2, what will be the similarity to Picture 2 of the other two pictures? Which do you expect to be more similar to Picture 2?
+
+## Answer 
+
+Confirm code works with getting same answer from book's example:
+
+```{r}
+n_iters <- 100;
+M <- matrix(c(0, 0, 0, 4/15, 2/5,
+              0, 0, 0, 4/15, 0,
+              0, 0, 0, 4/15, 2/5,
+              2/5, 4/5, 2/5, 0, 0,
+              2/5, 0, 2/5, 0, 0), ncol=5, byrow = TRUE);
+beta <- 0.8;
+en <- c(1,0,0,0,0);
+
+Mnew <- M + matrix(rep((1-beta)*en, 5), ncol=5);
+
+# Iterate 100 times
+vn <- en;
+for (i in 1:n_iters) {
+  vn <- Mnew %*% vn;
+}
+
+# Print final results, which matcth the book
+vn
+
+```
+
+Lets do the same for N = 1, which is picture 2:
+
+```{r}
+n_iters <- 100;
+M <- matrix(c(0, 0, 0, 4/15, 2/5,
+              0, 0, 0, 4/15, 0,
+              0, 0, 0, 4/15, 2/5,
+              2/5, 4/5, 2/5, 0, 0,
+              2/5, 0, 2/5, 0, 0), ncol=5, byrow = TRUE);
+beta <- 0.8;
+en <- c(0,1,0,0,0);
+
+Mnew <- M + matrix(rep((1-beta)*en, 5), ncol=5);
+
+# Iterate 100 times
+vn <- en;
+for (i in 1:n_iters) {
+  vn <- Mnew %*% vn;
+}
+
+# Print final results, which matcth the book
+vn
+
+```
+
+Notice, that the similarity to Picture 1 and Picture 3 is the same; since its symmetrical we should not expect anything different.
+
+\pagebreak
+
+# Use R for 10.7.1 (section 10.7.6)
+
+## Answer 
+
+\pagebreak
