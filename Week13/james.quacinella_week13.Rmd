@@ -41,25 +41,44 @@ Having the diagram start with node A is the same diagram that would result if th
 
 A - B: 
   - When A is root: 4
+  
   - When F is root: 0
+  
   - When I is root: 1
+  
   - When B is root: 1 
+  
   - When C is root: 
+  
   - When D is root: 
+  
   - When H is root: 
+  
   - When G is root: 
+  
   - When E is root: 
+  
 
 A - C: Same as A-B due to symmetry
-B - C: 
+
+B - C:
+
 B - H: 
+
 C - D: 
+
 H - I: Same as A-B due to symmetry
+
 H - G: 
+
 I - G: Same as A-B due to symmetry
+
 G - E: 
+
 D - E: 
+
 D - F: Same as A-B due to symmetry
+
 E - F: Same as A-B due to symmetry
 
 \pagebreak 
