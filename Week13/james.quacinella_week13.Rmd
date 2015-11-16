@@ -40,23 +40,27 @@ Using symmetry, the calculations of Exercise 10.2.1 are all you need to compute 
 Having the diagram start with node A is the same diagram that would result if the root was I or F. That means that diagram can be counted on 3 times in the summation calculation. The other diagram with root node B is the same that would result for all the other 5 nodes for a total of 6 (B,C,D,E,H,I). Here is a listing of all the edges and thir betweeness measurements:
 
 A - B: 
-  When A is root: 4
-  When F is root: 0
-  When I is root: 1
-  When B is root: 1 
-  When C is root: 
+  - When A is root: 4
+  - When F is root: 0
+  - When I is root: 1
+  - When B is root: 1 
+  - When C is root: 
+  - When D is root: 
+  - When H is root: 
+  - When G is root: 
+  - When E is root: 
 
-A - C: 
+A - C: Same as A-B due to symmetry
 B - C: 
 B - H: 
 C - D: 
-H - I: 
+H - I: Same as A-B due to symmetry
 H - G: 
-I - G: 
+I - G: Same as A-B due to symmetry
 G - E: 
 D - E: 
-D - F:
-E - F:
+D - F: Same as A-B due to symmetry
+E - F: Same as A-B due to symmetry
 
 \pagebreak 
 
