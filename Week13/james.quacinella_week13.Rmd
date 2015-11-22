@@ -37,12 +37,15 @@ Using symmetry, the calculations of Exercise 10.2.1 are all you need to compute 
 
 ## Answer
 
-Having the diagram start with node A is the same diagram that would result if the root was I or F, with the symmetry being a mirror flip. That means that diagram can be counted on 3 times in the summation calculation. The other diagram with root node B is the same that would result for the other nodes C, E and H, with the symmetry being a mirror flip. For Nodes D and G, we need to do two flips in order to get the right orientation.
+Having the diagram start with node A is the same diagram that would result if the root was I or F, with the symmetry being a mirror flip. That means that diagram can be used 3 times in the summation calculation. The other diagram with root node B is the same that would result for the other nodes C, E and H, with the symmetry being a mirror flip. For Nodes D and G, we need to do two flips in order to get the right orientation.
 
-My work is all done in an attched spread sheet, but here are the final results:
+My work is all done in an attched spread sheet. To explain my methodology, I hand calculated the diagram for root node being A and B. In the spreadsheet, for the other nodes, I come up with a node mapping, which maps a node in the original diagram to the node it would match to after the symmetry is applied. For example, to get the numbers for root node I, we can take the root A diagram and flip over F (meaning flip the diagram across an axis starting with F that traverses the diagram ). Using this mapping, I map edges to new edges and copy the calculated value from the diagram for that 'mapped edged'.
+
+Hhere are the final results:
 
 ```{r kable}
-edges <- c("A => B", "A => C", "B => C", "B => H", "C => D", "D => F", "H => I", "D => E", "G => H", "E => F", "G => I", "E => G")
+edges <- c("A => B", "A => C", "B => C", "B => H", "C => D", "D => F", 
+           "H => I", "D => E", "G => H", "E => F", "G => I", "E => G")
 scores <- c(4, 4, 6.5, 9.5, 9.5, 4, 4, 6.5, 6.5, 4, 4, 9.5)
 
 library(knitr)
