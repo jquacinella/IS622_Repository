@@ -18,14 +18,14 @@ Figure 10.9 is an example of a social-network graph. Use the Girvan-Newman appro
 ```{r fig.width=7, fig.height=10,echo=FALSE}
 library(jpeg)
 library(grid)
-img <- readJPEG("/home/james/Development/Masters/IS622/Week13/pica.jpg")
+img <- readJPEG("/home/james/Development/Masters/IS622/Week13/root_a.jpg")
 grid.raster(img)
 ```
 
 (B) 
 
 ```{r fig.width=7, fig.height=10,echo=FALSE}
-img <- readJPEG("/home/james/Development/Masters/IS622/Week13/picb.jpg")
+img <- readJPEG("/home/james/Development/Masters/IS622/Week13/root_b.jpg")
 grid.raster(img)
 ```
 
@@ -37,49 +37,19 @@ Using symmetry, the calculations of Exercise 10.2.1 are all you need to compute 
 
 ## Answer
 
-Having the diagram start with node A is the same diagram that would result if the root was I or F. That means that diagram can be counted on 3 times in the summation calculation. The other diagram with root node B is the same that would result for all the other 5 nodes for a total of 6 (B,C,D,E,H,I). Here is a listing of all the edges and thir betweeness measurements:
+Having the diagram start with node A is the same diagram that would result if the root was I or F, with the symmetry being a mirror flip. That means that diagram can be counted on 3 times in the summation calculation. The other diagram with root node B is the same that would result for the other nodes C, E and H, with the symmetry being a mirror flip. For Nodes D and G, we need to do two flips in order to get the right orientation.
 
-A - B: 
-  - When A is root: 4
-  
-  - When F is root: 0
-  
-  - When I is root: 1
-  
-  - When B is root: 1 
-  
-  - When C is root: 
-  
-  - When D is root: 
-  
-  - When H is root: 
-  
-  - When G is root: 
-  
-  - When E is root: 
-  
+My work is all done in an attched spread sheet, but here are the final results:
 
-A - C: Same as A-B due to symmetry
+```{r kable}
+edges <- c("A => B", "A => C", "B => C", "B => H", "C => D", "D => F", "H => I", "D => E", "G => H", "E => F", "G => I", "E => G")
+scores <- c(4, 4, 6.5, 9.5, 9.5, 4, 4, 6.5, 6.5, 4, 4, 9.5)
 
-B - C:
+library(knitr)
+df <- data.frame(edges=edges, scores=scores)
+kable(df)
+```
 
-B - H: 
-
-C - D: 
-
-H - I: Same as A-B due to symmetry
-
-H - G: 
-
-I - G: Same as A-B due to symmetry
-
-G - E: 
-
-D - E: 
-
-D - F: Same as A-B due to symmetry
-
-E - F: Same as A-B due to symmetry
 
 \pagebreak 
 
