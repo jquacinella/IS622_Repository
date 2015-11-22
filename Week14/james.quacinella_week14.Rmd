@@ -96,4 +96,8 @@ N(B, 3) = {A, B, C, H, D, I, G, E, F}
 
 So the neighborhood profile for A is: 4, 7, 9
 
+
+(c) The diameter of a directed graph is the smallest integer d such that for every
+two nodes u and v there is a path of length d or less from u to v. In this case, the diameter is 3, since every node is at most 3 steps from another.
+
 \pagebreak
