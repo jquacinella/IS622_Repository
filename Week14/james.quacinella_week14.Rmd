@@ -66,8 +66,34 @@ Notice, that the similarity to Picture 1 and Picture 3 is the same; since its sy
 
 \pagebreak
 
-# Use R for 10.7.1 (section 10.7.6)
+# Use R for 10.7.1 (section 10.7.8)
+
+Exercise 10.7.1 : For the graph of Fig. 10.9, which we repeat here as Fig. 10.22:
+
+(a) If the graph is represented as a directed graph, how many arcs are there?
+(b) What are the neighborhood profiles for nodes A and B?
+(c) What is the diameter of the graph?
+(d) How many pairs are in the transitive closure? Hint : Do not forget that there are paths of length greater than zero from a node to itself in this graph.
+(e) If we compute the transitive closure by recursive doubling, how many
+rounds are needed?
 
 ## Answer 
+
+(a) There are 12 edges in the graph. To convert it from undirected to directed, we would double that amount (for each edge x-y, create two edges x -> y and y -> x). Therefore, 24 edges in the directed graph
+
+(b)
+
+N(A, 1) = {A, B, C}
+N(A, 2) = {A, B, C, H, D}
+N(A, 3) = {A, B, C, H, D, I, G, E, F}
+
+So the neighborhood profile for A is: 3, 5, 9
+
+
+N(B, 1) = {A, B, C, H}
+N(B, 2) = {A, B, C, H, D, I, G}
+N(B, 3) = {A, B, C, H, D, I, G, E, F}
+
+So the neighborhood profile for A is: 4, 7, 9
 
 \pagebreak
