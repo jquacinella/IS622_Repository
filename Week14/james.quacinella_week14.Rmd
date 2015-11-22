@@ -79,25 +79,29 @@ rounds are needed?
 
 ## Answer 
 
-(a) There are 12 edges in the graph. To convert it from undirected to directed, we would double that amount (for each edge x-y, create two edges x -> y and y -> x). Therefore, 24 edges in the directed graph
+(a) There are 12 edges in the graph. To convert it from undirected to directed, we would double that amount (for each edge x-y, create two edges x -> y and y -> x). Therefore, **24 edges in the directed graph**.
 
 (b)
 
-N(A, 1) = {A, B, C}
-N(A, 2) = {A, B, C, H, D}
-N(A, 3) = {A, B, C, H, D, I, G, E, F}
+$$N(A, 1) = \{A, B, C\}$$
+$$N(A, 2) = \{A, B, C, H, D\}$$
+$$N(A, 3) = \{A, B, C, H, D, I, G, E, F\}$$
 
-So the neighborhood profile for A is: 3, 5, 9
+So the neighborhood profile for A is: **3, 5, 9**
 
 
-N(B, 1) = {A, B, C, H}
-N(B, 2) = {A, B, C, H, D, I, G}
-N(B, 3) = {A, B, C, H, D, I, G, E, F}
+$$N(B, 1) = \{A, B, C, H\}$$
+$$N(B, 2) = \{A, B, C, H, D, I, G\}$$
+$$N(B, 3) = \{A, B, C, H, D, I, G, E, F\}$$
 
-So the neighborhood profile for A is: 4, 7, 9
+So the neighborhood profile for A is: **4, 7, 9**
 
 
 (c) The diameter of a directed graph is the smallest integer d such that for every
-two nodes u and v there is a path of length d or less from u to v. In this case, the diameter is 3, since every node is at most 3 steps from another.
+two nodes u and v there is a path of length d or less from u to v. In this case, the **diameter is 3**, since every node is at most 3 steps from another. Can be derived visually or by noticing that 3 is the largest path in part (b) and we know this graph is symetrical with respect to these nodes to every other possible node, so there can be no longer paths.
+
+(d)
+
+(e) From the textbook: "By a recursive-doubling technique, we can double the length of paths we know about in a single round. Thus, on a graph of diameter d, we need only $log_2 (d)$ rounds, rather than d rounds". Since the diameter is 3, we need only $log2(3)$ rounds, which is **2 rounds** when the deciam is rounded up. This saves us only one round, which is not spectacular.
 
 \pagebreak
