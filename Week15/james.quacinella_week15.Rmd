@@ -23,7 +23,95 @@ of Exercise 11.1.4.
 ## Answer
 
 ```{r}
+frobenius <- function(M) {
+  return(sqrt(sum(apply(M, c(1, 2), function(x) {x*x}))));
+}
+
+principal_eigen_vector <- function(M, x, tolerance) {
+  # print(M)
+  diff = 1
+  x_new <- x
+  count <- 0;
+  while(diff > tolerance && count < 10000) {
+    #print(x_new)
+    
+    # update x_old to next value
+    x_old <- x_new
+    
+    # Calc new x
+    x_new <- (M %*% x_old) / frobenius(M %*% x_old)
+    
+    if(x_new[which.max(abs(x_new))] < 0) {
+      x_new <- -1 * x_new;
+    }
+    
+    # update diff from new x to old x
+    diff <- frobenius(x_new - x_old)
+    #print(diff)
+    
+    count <- count + 1;
+  }
+
+  return(x_new);
+}
+
+eigen_value <- function(M, eigenvec) {
+  return(as.double(t(eigenvec) %*% M %*% eigenvec))
+}
+
 M <- matrix(c(1,1,1,1,2,3,1,3,5), ncol=3, byrow=TRUE)
+x <- c(1,1,1)
+
+# Calculate first eigenvector
+first_evector <- principal_eigen_vector(M, x, tolerance = 0.0007)
+first_evalue <- eigen_value(M, first_evector)
+
+# Deflate M
+M_1 <- M - first_evalue * first_evector %*% t(first_evector)
+
+# Calculate second eigenvector
+second_evector <- principal_eigen_vector(M_1, first_evector, tolerance = 0.0007)
+second_evalue <- eigen_value(M_1, second_evector)
+
+# Deflate M again
+## This has a spurious eigenvector that the next step finds instead
+M_2 <- M_1 - second_evalue * second_evector %*% t(second_evector)
+
+# Calculate third eigenvector
+third_evector <- principal_eigen_vector(M_2, second_evector, tolerance = 0.0007)
+third_evalue <- eigen_value(M_2, third_evector)
+```
+
+Correctly find the first eigen vector and value:
+
+```{r results='hold'}
+# Print results
+print(first_evector)
+print(first_evalue)
+print(eigen(M))
+```
+
+Correctly find the second eigen vector and value:
+
+```{r results='hold'}
+print(second_evector)
+print(second_evalue)
+print(eigen(M_1))
+```
+
+As you can see below, there is a spurious eigenvector in the new deflated M value. I am not sure how to handle this.
+
+```{r results='hold'}
+print(third_evector)
+print(third_evalue)
+print(eigen(M_2))
+```
+
+```{r}
+# Still doesn't help
+library(MASS)
+third_evector <- principal_eigen_vector(ginv(M), x, tolerance = 0.0007)
+third_evector
 ```
 
 \pagebreak
@@ -56,6 +144,20 @@ Sigma <- matrix(c(12.4, 0, 0, 9.5), ncol=2, byrow=TRUE)
 
 Vt <- matrix(c(0.58, 0.58, 0.58, 0, 0,
               0, 0, 0, 0.71, 0.71), ncol=5, byrow=TRUE)
+
+leslie <- c(0, 3, 0, 0, 4)
+
+leslie %*% t(Vt) # 1.74 2.84
 ```
+
+This shows that Leslie would tend to like group 2 of movies (romance) moreso than group 1, sci-fi movies. This makes sense since she rated the one romance movie higher than the one sci-fi movie.
+
+We can confirm this by looking at a possible set of ratings Leslie would have for all movies:
+
+```{r}
+leslie %*% t(Vt) %*% Vt
+```
+
+So, it does seem that Leslie would rate the romance movies higher than the sci-fi movies.
 
 \pagebreak
