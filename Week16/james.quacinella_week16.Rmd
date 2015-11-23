@@ -1,0 +1,40 @@
+---
+title: "Week16 - IS622"
+author: "James Quacinella"
+date: "11/23/2015"
+output: pdf_document
+---
+
+# Exercise 11.4.1
+
+The SVD for the matrix is given. Find the Moore-Penrose pseudoinverse of M .
+
+```{r}
+M <- matrix(c(48, 14, 14, -48), ncol=2, byrow=TRUE)
+
+U <- matrix(c(3/5, 4/5, 4/5, -3/5), ncol=2, byrow=TRUE)
+Sigma <- matrix(c(50, 0, 0, 25), ncol=2, byrow=TRUE)
+Vt <- matrix(c(4/5, -3/5, 3/5, 4/5), ncol=2, byrow=TRUE)
+
+U %*% Sigma %*% Vt
+```
+
+How is this a SVD decomposition of M??
+
+```{r}
+library(MASS)
+ginv(M)
+```
+
+## Answer
+
+\pagebreak
+
+
+# Exercise 11.3.4
+
+Section 11.3.5 showed how to guess the movies a person would most like. How would you use a similar technique to guess the people that would most like a given movie, if all you had were the ratings of that movie by a few people?
+
+## Answer
+
+\pagebreak
