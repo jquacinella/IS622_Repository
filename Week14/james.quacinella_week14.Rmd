@@ -57,7 +57,7 @@ library(igraph)
 ```
 
 ```{r}
-find_triangles <- function(g) {
+find_triangles <- function(g, verbose=TRUE) {
   edges <- E(g);
   for (i in 1:length(edges)) {
     nodes <- get.edges(g, edges[i]);
@@ -72,18 +72,21 @@ find_triangles <- function(g) {
     for (ui in u) {
       # Check if ui and v2 do have a link, and make sure ordering is correct
       if(g[ui, v2] == 1 && v1 < ui && v1 < v2 && v2 < ui) {
-        print(paste("Triangle found", get.vertex.attribute(g, "name", v1), 
+        if(verbose) {
+          print(paste("Triangle found", get.vertex.attribute(g, "name", v1), 
                                       get.vertex.attribute(g, "name", v2), 
                                       get.vertex.attribute(g, "name", ui)));
+        }
       }
     }
   }
 }
 ```
 
+\pagebreak
+
 (a) Fig 10.1
 
-```{r}
 ```{r}
 input_edges <- c(1,2, 2,3, 1,3, 2,4, 4,5, 4,6, 4,7, 6,7, 5,6);
 g <- graph(input_edges, n=max(input_edges), directed=FALSE);
@@ -97,8 +100,32 @@ g <- set.vertex.attribute(g, "name", 7, "G");
 g <- set.vertex.attribute(g, "name", 8, "H");
 g <- set.vertex.attribute(g, "name", 9, "I");
 plot(g, layout=layout.kamada.kawai, vertex.size=25);
+```
 
+```{r include=FALSE}
+png(filename="/home/james/Code/Masters/IS622/Week14/graph1.png", height=800, width=600) 
+plot(g, layout=layout.kamada.kawai, vertex.size=25);
+dev.off()
+```
+
+Lets run the algo and see the performance:
+
+```{r}
+ptm <- proc.time() # Start the clock!
 find_triangles(g);
+print(proc.time() - ptm)
+```
+
+Not too sure why, but the initial run is always slow. This must be R lazy loading some libraries / code, so lets run it again:
+
+```{r}
+num_iter <- 10;
+
+for(i in seq(num_iter)) {
+  ptm <- proc.time()
+  find_triangles(g, verbose=FALSE);
+  print(proc.time() - ptm)
+}
 ```
 
 \pagebreak
@@ -118,8 +145,16 @@ g <- set.vertex.attribute(g, "name", 7, "G");
 g <- set.vertex.attribute(g, "name", 8, "H");
 g <- set.vertex.attribute(g, "name", 9, "I");
 plot(g, layout=layout.kamada.kawai, vertex.size=25);
+```
 
-find_triangles(g);
+```{r}
+num_iter <- 10;
+
+for(i in seq(num_iter)) {
+  ptm <- proc.time()
+  find_triangles(g, verbose=FALSE);
+  print(proc.time() - ptm)
+}
 ```
 
 \pagebreak
@@ -139,6 +174,20 @@ g <- set.vertex.attribute(g, "name", 7, "W1")
 g <- set.vertex.attribute(g, "name", 8, "W2")
 g <- set.vertex.attribute(g, "name", 9, "W3")
 plot(g, layout=layout.kamada.kawai, vertex.size=25)
+```
 
-find_triangles(g);
+```{r include=FALSE}
+png(filename="/home/james/Code/Masters/IS622/Week14/graph3.png", height=800, width=600) 
+plot(g, layout=layout.kamada.kawai, vertex.size=25);
+dev.off()
+```
+
+```{r}
+num_iter <- 10;
+
+for(i in seq(num_iter)) {
+  ptm <- proc.time()
+  find_triangles(g, verbose=FALSE);
+  print(proc.time() - ptm)
+}
 ```
