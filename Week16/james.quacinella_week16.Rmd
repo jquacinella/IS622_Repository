@@ -9,24 +9,34 @@ output: pdf_document
 
 The SVD for the matrix is given. Find the Moore-Penrose pseudoinverse of M .
 
+## Answer
+
 ```{r}
 M <- matrix(c(48, 14, 14, -48), ncol=2, byrow=TRUE)
 
 U <- matrix(c(3/5, 4/5, 4/5, -3/5), ncol=2, byrow=TRUE)
 Sigma <- matrix(c(50, 0, 0, 25), ncol=2, byrow=TRUE)
 Vt <- matrix(c(4/5, -3/5, 3/5, 4/5), ncol=2, byrow=TRUE)
-
-U %*% Sigma %*% Vt
 ```
 
-How is this a SVD decomposition of M??
+Notice that the SVD decomposition is not very good, as the results are close to M but not quite the same:
+
+```{r}
+U %*% Sigma %*% Vt
+M
+``` 
+
+Either way, the inverse of M is:
 
 ```{r}
 library(MASS)
 ginv(M)
 ```
 
-## Answer
+
+
+
+
 
 \pagebreak
 
