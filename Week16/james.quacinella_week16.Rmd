@@ -26,19 +26,34 @@ U %*% Sigma %*% Vt
 M
 ``` 
 
-Either way, the inverse of M is:
+
+I will use the M given, and find its SVD decomposition:
 
 ```{r}
+# SVD decompose of M
+factor <- svd(M)
+d <- factor$d
+u <- factor$u
+v <- factor$v
+
+# Confirm
+u %*% diag(d) %*% t(v)
+```
+
+To find the pseudoinverse of M, I follow page 429 in the book and find pseudoinverse of Sigma (or d above):
+
+```{r}
+# Use pseudoinverse of d to get inverse of M
+t(v) * diag(c(1/50, 1/50)) * t(u)
+```
+
+Lets compare to the real inverse:
+
+```{r}
+# Real inverse
 library(MASS)
 ginv(M)
 ```
-
-
-
-
-
-
-\pagebreak
 
 
 # Exercise 11.3.4
@@ -46,5 +61,7 @@ ginv(M)
 Section 11.3.5 showed how to guess the movies a person would most like. How would you use a similar technique to guess the people that would most like a given movie, if all you had were the ratings of that movie by a few people?
 
 ## Answer
+
+Will post to discussion board
 
 \pagebreak
